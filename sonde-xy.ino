@@ -5,35 +5,37 @@
 #include "topo.hpp"
 #include "consts.hpp"
 
-bool TOPOLOGIE = true;
+bool TOPOLOGIE = false;
 
 // initialize the stepper library on pins 8 through 11:
 Stepper sty(20, 9, 10, 11, 12);
 Stepper stx(20, 5, 6, 7, 8);
 Stepper stz(20, 2, 3, 4, A0);
 
-void setup()
-{
+void setup() {
   // initialize the serial port:
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("START");
   Serial.println("x,y,v");
 
-  if (TOPOLOGIE)
-    stz.setSpeed(50);
-  else
-    setupHall();
-
-  sty.setSpeed(500);
-  stx.setSpeed(500);
+  sty.setSpeed(200);
+  stx.setSpeed(200);
+  stz.setSpeed(300);
+  if (!TOPOLOGIE) stz.step(200);
   sty.step(-height);
   stx.step(-width);
-  sty.setSpeed(50);
-  stx.setSpeed(50);
+
+  if (TOPOLOGIE)
+    stz.setSpeed(50);
+  else {
+    setupHall();
+    stz.step(-201);
+    stz.step(5);
+  }
 
   if (TOPOLOGIE)
     setupTopology(stz);
-    
+
   //sty.step(-height);
   //stx.step(-width);
 
@@ -45,6 +47,5 @@ void setup()
   Serial.println("END");
 }
 
-void loop()
-{
+void loop() {
 }
